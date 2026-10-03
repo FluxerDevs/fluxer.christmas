@@ -1,5 +1,6 @@
 import type { Handle, ServerInit } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
+import { building } from '$app/environment';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import { getDb } from '$lib/server/db';
@@ -7,6 +8,8 @@ import { getSession, SESSION_COOKIE } from '$lib/server/session';
 import { registerWebSockets } from '$lib/server/websocket';
 
 export const init: ServerInit = () => {
+	// Prerendering (the static GitHub Pages build) needs no database or sockets.
+	if (building) return;
 	// Fail fast on a broken data volume instead of on the first login.
 	getDb();
 	// Placeholder until multiplayer lands: greet and keep the socket open.
@@ -14,6 +17,12 @@ export const init: ServerInit = () => {
 };
 
 const handleSession: Handle = async ({ event, resolve }) => {
+	if (building) {
+		// Prerendered pages are the same for everyone: nobody is logged in.
+		event.locals.session = null;
+		event.locals.user = null;
+		return resolve(event);
+	}
 	const token = event.cookies.get(SESSION_COOKIE);
 	const session = await getSession(token);
 	// A cookie for a session that no longer exists: drop it.

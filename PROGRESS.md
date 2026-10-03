@@ -106,6 +106,7 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 ## Decisions log
 
 - **Hosting:** a single Docker image (adapter-node plus a custom server with WebSockets), published to GHCR and run as one Rancher workload. SQLite (`node:sqlite`) sits on a mounted volume.
+- **Hosting, for now (owner's decision, 2026-10-02):** the site stays on **GitHub Pages** until the owner switches infra by hand. `deploy.yml` builds `DEPLOY_TARGET=static` (adapter-static, prerendered, no server features; the WIP screen shows unless the repo variable `REQUIRE_LOGIN=false`). `docker.yml` (GHCR) is `workflow_dispatch` only. **Don't make it automatic until the owner says so.** Server-only features (login, rooms, multiplayer) only work in the Node build, so the static build must keep compiling: guard server-only UI with `__STATIC_SITE__`.
 - **OAuth:** Fluxer's token endpoint always requires `client_secret`, so the code exchange happens on the server. PKCE (S256) is used as well. Scopes are `identify guilds`.
 - **Friends:** OAuth bearer tokens can't use the relationships API, so "invite friends" means shareable links.
 - **Whitelist:** comma-separated Fluxer user IDs in the `FLUXER_WHITELIST` env var.

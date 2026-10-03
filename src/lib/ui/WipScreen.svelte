@@ -47,7 +47,8 @@
 		{#if user}
 			<p class="text-sm text-amber-100/70">{m.wip_not_listed({ name: user.displayName })}</p>
 			<AccountChip />
-		{:else}
+		{:else if !__STATIC_SITE__}
+			<!-- The static GitHub Pages build has no server to log in with. -->
 			<div class="flex flex-col items-center gap-2">
 				<span class="text-sm text-amber-100/70">{m.wip_tester_login()}</span>
 				<AccountChip />

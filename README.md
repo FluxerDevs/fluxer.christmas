@@ -25,7 +25,19 @@ Useful scripts:
 | `pnpm test`                 | Playwright end-to-end tests against a production build                                                |
 | `pnpm fluxer:sync`          | Download the Fluxer docs and source this project relies on into `fluxer-reference/` (read-only, AGPL) |
 
-## Running in production
+## Deployment
+
+The live site at https://fluxer.christmas is served by **GitHub Pages**. `.github/workflows/deploy.yml` runs on every push to `main` and builds the static, prerendered version:
+
+```sh
+DEPLOY_TARGET=static REQUIRE_LOGIN=true pnpm build   # writes build/index.html
+```
+
+The static build has no server, so there's no login, database or multiplayer. With `REQUIRE_LOGIN=true` (the default, and what Pages uses unless the `REQUIRE_LOGIN` repository variable is `false`) it shows the work-in-progress screen. With `false` it shows the room to everyone.
+
+The Node server below is what the full feature set needs. It's for when the site moves to Docker/Rancher. Its image workflow only runs when started by hand for now.
+
+## Running in production (Node server)
 
 ```sh
 pnpm build
@@ -36,7 +48,7 @@ pnpm start             # node server/index.js, listens on PORT (default 3000)
 
 ### Docker
 
-GitHub Actions (`.github/workflows/docker.yml`) builds the image and publishes it to `ghcr.io/fluxerdevs/fluxer.christmas` on every push to `main`. It's tagged `latest`, `sha-<commit>` and the version for `v*` tags.
+`.github/workflows/docker.yml` builds the image and publishes it to `ghcr.io/fluxerdevs/fluxer.christmas`. It's **manual only** for now (Actions → Build and publish Docker image → Run workflow) and tags `latest` and `sha-<commit>`.
 
 ```sh
 docker build -t fluxer-christmas .

@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    # branches: [main]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -35,10 +35,13 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
 
+      # Static, prerendered build: no login, database or multiplayer on Pages.
       - run: pnpm build
         env:
-          # '' when a custom domain is configured, '/<repo>' otherwise.
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          DEPLOY_TARGET: static
+          # The work-in-progress screen is shown unless the repository variable
+          # REQUIRE_LOGIN is set to 'false' (Settings → Secrets and variables → Actions).
+          REQUIRE_LOGIN: ${{ vars.REQUIRE_LOGIN || 'true' }}
 
       - uses: actions/upload-pages-artifact@v3
         with:
