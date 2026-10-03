@@ -10,5 +10,21 @@
 	"controls_run": "Correr",
 	"controls_look": "Mirar alrededor",
 	"controls_pause": "Pausa",
-	"key_mouse": "Ratón"
+	"key_mouse": "Ratón",
+	"settings": "Ajustes",
+	"settings_close": "Cerrar",
+	"settings_sensitivity": "Sensibilidad del ratón",
+	"settings_layout": "Distribución del teclado",
+	"settings_layout_hint": "Los controles siguen la posición de las teclas, así que funcionan con cualquier distribución. Esto solo cambia las letras que se muestran.",
+	"settings_layout_auto": "Detectar automáticamente",
+	"settings_controls": "Controles",
+	"settings_rebind_hint": "Haz clic en una tecla y pulsa la nueva. Esc cancela.",
+	"settings_press_key": "Pulsa una tecla…",
+	"settings_unbound": "Ninguna",
+	"settings_reset": "Restablecer controles",
+	"action_forward": "Adelante",
+	"action_backward": "Atrás",
+	"action_left": "Izquierda",
+	"action_right": "Derecha",
+	"action_run": "Correr"
 }

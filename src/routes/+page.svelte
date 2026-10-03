@@ -3,12 +3,16 @@
 	import { ACESFilmicToneMapping, PCFShadowMap } from 'three';
 	import { m } from '$lib/paraglide/messages.js';
 	import { watchPointerLock } from '$lib/game/state.svelte';
+	import { input } from '$lib/game/input.svelte';
+	import { loadSettings } from '$lib/game/settings';
 	import Scene from '$lib/3d/Scene.svelte';
 	import HUD from '$lib/ui/HUD.svelte';
 	import StartOverlay from '$lib/ui/StartOverlay.svelte';
 
 	// `pointerlockchange` isn't in Svelte's typed document events, so subscribe manually.
 	$effect(() => watchPointerLock());
+	$effect(() => input.attach());
+	loadSettings();
 </script>
 
 <svelte:head>

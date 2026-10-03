@@ -2,6 +2,9 @@
 	import { fade } from 'svelte/transition';
 	import { m } from '$lib/paraglide/messages.js';
 	import { enterRoom, game } from '$lib/game/state.svelte';
+	import SettingsPanel from './SettingsPanel.svelte';
+
+	let settingsOpen = $state(false);
 
 	const action = $derived(
 		!game.ready ? m.loading() : game.phase === 'paused' ? m.resume() : m.enter()
@@ -42,5 +45,15 @@
 				{action}
 			</span>
 		</div>
+
+		<button
+			type="button"
+			class="absolute top-4 right-4 rounded-full border border-amber-200/30 bg-amber-950/40 px-4 py-2 text-sm text-amber-100 backdrop-blur-sm hover:border-amber-200/60 hover:bg-amber-900/50 focus-visible:outline-2 focus-visible:outline-amber-300"
+			onclick={() => (settingsOpen = true)}
+		>
+			{m.settings()}
+		</button>
 	</div>
 {/if}
+
+<SettingsPanel bind:open={settingsOpen} />

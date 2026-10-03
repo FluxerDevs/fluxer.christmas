@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { m } from '$lib/paraglide/messages.js';
 	import { game } from '$lib/game/state.svelte';
+	import { input, type Action } from '$lib/game/input.svelte';
 
 	let showHints = $state(true);
 
@@ -13,9 +14,18 @@
 		return () => clearTimeout(timeout);
 	});
 
+	/** Label of the primary key bound to an action, as printed on the player's keyboard. */
+	const key = (action: Action) => {
+		const code = input.bindings[action][0];
+		return code ? input.label(code) : '–';
+	};
+
 	const controls = $derived([
-		{ keys: ['W', 'A', 'S', 'D'], label: m.controls_move() },
-		{ keys: ['Shift'], label: m.controls_run() },
+		{
+			keys: [key('forward'), key('left'), key('backward'), key('right')],
+			label: m.controls_move()
+		},
+		{ keys: [key('run')], label: m.controls_run() },
 		{ keys: [m.key_mouse()], label: m.controls_look() },
 		{ keys: ['Esc'], label: m.controls_pause() }
 	]);
@@ -35,7 +45,7 @@
 			{#each controls as control (control.label)}
 				<li class="flex items-center gap-3">
 					<span class="flex gap-1">
-						{#each control.keys as key (key)}
+						{#each control.keys as key, i (i)}
 							<kbd
 								class="rounded border border-amber-100/30 bg-amber-950/50 px-1.5 py-0.5 font-mono text-xs"
 							>

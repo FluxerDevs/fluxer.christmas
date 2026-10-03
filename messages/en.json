@@ -10,5 +10,21 @@
 	"controls_run": "Run",
 	"controls_look": "Look around",
 	"controls_pause": "Pause",
-	"key_mouse": "Mouse"
+	"key_mouse": "Mouse",
+	"settings": "Settings",
+	"settings_close": "Close",
+	"settings_sensitivity": "Mouse sensitivity",
+	"settings_layout": "Keyboard layout",
+	"settings_layout_hint": "Controls follow key positions, so they work on any layout. This only changes the letters shown.",
+	"settings_layout_auto": "Detect automatically",
+	"settings_controls": "Controls",
+	"settings_rebind_hint": "Click a key, then press the new one. Esc cancels.",
+	"settings_press_key": "Press a key…",
+	"settings_unbound": "None",
+	"settings_reset": "Reset controls",
+	"action_forward": "Forward",
+	"action_backward": "Back",
+	"action_left": "Left",
+	"action_right": "Right",
+	"action_run": "Run"
 }

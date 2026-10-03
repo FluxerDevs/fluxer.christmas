@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
-	import { useInputMap, useKeyboard } from '@threlte/extras';
 	import { Collider, RigidBody } from '@threlte/rapier';
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
 	import { Vector3 } from 'three';
 	import { game } from '$lib/game/state.svelte';
+	import { input } from '$lib/game/input.svelte';
 	import { damp, inputToVelocity, look, PLAYER } from '$lib/game/player';
 
 	interface Props {
@@ -16,18 +16,6 @@
 
 	let rigidBody = $state<RapierRigidBody>();
 
-	const keyboard = useKeyboard();
-	const input = useInputMap(
-		({ key }) => ({
-			forward: [key('w'), key('ArrowUp')],
-			backward: [key('s'), key('ArrowDown')],
-			left: [key('a'), key('ArrowLeft')],
-			right: [key('d'), key('ArrowRight')],
-			run: [key('Shift')]
-		}),
-		{ keyboard }
-	);
-
 	const target = new Vector3();
 	let bobPhase = 0;
 	let bob = 0;
@@ -35,11 +23,8 @@
 	useTask((delta) => {
 		if (!rigidBody) return;
 
-		const move =
-			game.phase === 'playing'
-				? input.vector('left', 'right', 'backward', 'forward')
-				: { x: 0, y: 0 };
-		const speed = input.action('run').pressed ? PLAYER.runSpeed : PLAYER.walkSpeed;
+		const move = game.phase === 'playing' ? input.vector() : { x: 0, y: 0 };
+		const speed = input.isDown('run') ? PLAYER.runSpeed : PLAYER.walkSpeed;
 		inputToVelocity(move, look.yaw, speed, target);
 
 		const velocity = rigidBody.linvel();

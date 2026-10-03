@@ -4,8 +4,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Current status
 
-- **Current phase:** Phase 2 (Keyboard layout support)
-- **Next step:** create `src/lib/game/input.svelte.ts` (key state keyed on `event.code`) and replace `useInputMap` in `src/lib/3d/Player.svelte`.
+- **Current phase:** Phase 3 (Backend migration: Docker + GHCR)
+- **Next step:** switch `vite.config.ts` to `@sveltejs/adapter-node`, drop the GitHub Pages/prerender config, then add the custom server entry with `/ws` and `/healthz`.
 
 ## Phases
 
@@ -24,12 +24,14 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - [x] Gumdrop buttons (red and green), instanced with the same matrices as the cookies
 - [x] Reused on the coffee-table cookie plate
 
-### Phase 2: Keyboard layout support (TODO 2)
+### Phase 2: Keyboard layout support (TODO 2) ✅
 
-- [ ] `src/lib/game/input.svelte.ts`: `event.code`-based key state, bindings, one-shot actions
-- [ ] Replace `useInputMap` in `Player.svelte`
-- [ ] Layout-aware HUD labels (`navigator.keyboard.getLayoutMap()` plus a fallback layout picker)
-- [ ] Settings panel (rebinding, sensitivity) persisted in localStorage
+- [x] `src/lib/game/input.svelte.ts`: key state keyed on `event.code`, bindings, layout-aware labels
+- [x] Replace `useInputMap` in `Player.svelte`
+- [x] Layout-aware HUD labels. The order of preference is: an explicitly chosen layout, then labels learned from `navigator.keyboard.getLayoutMap()` or from keys the player has pressed, then a guess from the browser language.
+- [x] Settings panel (`src/lib/ui/SettingsPanel.svelte`, opened from the start/pause overlay): sensitivity, layout, rebinding. Saved via `src/lib/game/storage.ts`.
+- [x] e2e: `src/lib/ui/settings.e2e.ts`
+- Note: Phases 6 and 7 add their actions (`view`, `interact`) to `ACTIONS`/`DEFAULT_BINDINGS` and to `actionLabels` in `SettingsPanel.svelte`.
 
 ### Phase 3: Backend migration (Docker + GHCR)
 
