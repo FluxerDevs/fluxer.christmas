@@ -5,6 +5,8 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	// Must match the OAuth redirect URI registered with Fluxer (http://localhost:4321/callback).
+	server: { port: 4321, strictPort: true },
 	plugins: [
 		tailwindcss(),
 		sveltekit({

@@ -13,7 +13,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:e2e": "playwright install && playwright test",
-		"test": "npm run test:e2e"
+		"test": "npm run test:e2e",
+		"fluxer:sync": "node scripts/sync-fluxer-source.mjs"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^21.2.3",

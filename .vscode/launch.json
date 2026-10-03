@@ -1,0 +1,65 @@
+{
+	// Ports are pinned (dev: 4321 in vite.config.ts, preview: --strictPort) so the browser always opens the right URL.
+	// Vite colours the port number in its output, so it can't be captured from the log.
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Dev server",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "pnpm dev",
+			"cwd": "${workspaceFolder}",
+			"serverReadyAction": {
+				"action": "openExternally",
+				"pattern": "localhost:",
+				"uriFormat": "http://localhost:4321"
+			}
+		},
+		{
+			"name": "Dev server + debug in Edge",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "pnpm dev",
+			"cwd": "${workspaceFolder}",
+			"serverReadyAction": {
+				"action": "debugWithEdge",
+				"pattern": "localhost:",
+				"uriFormat": "http://localhost:4321",
+				"webRoot": "${workspaceFolder}"
+			}
+		},
+		{
+			"name": "Dev server + debug in Chrome",
+			"type": "node-terminal",
+			"request": "launch",
+			"command": "pnpm dev",
+			"cwd": "${workspaceFolder}",
+			"serverReadyAction": {
+				"action": "debugWithChrome",
+				"pattern": "localhost:",
+				"uriFormat": "http://localhost:4321",
+				"webRoot": "${workspaceFolder}"
+			}
+		},
+		{
+			"name": "Production build + preview",
+			"type": "node-terminal",
+			"request": "launch",
+			"preLaunchTask": "build",
+			"command": "pnpm preview --port 4173 --strictPort",
+			"cwd": "${workspaceFolder}",
+			"serverReadyAction": {
+				"action": "openExternally",
+				"pattern": "localhost:",
+				"uriFormat": "http://localhost:4173"
+			}
+		},
+		{
+			"name": "Update Fluxer reference source",
+			"type": "node-terminal",
+			"request": "launch",
+			"cwd": "${workspaceFolder}",
+			"command": "pnpm fluxer:sync"
+		}
+	]
+}

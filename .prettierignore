@@ -7,3 +7,9 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Generated / vendored
+/project.inlang/
+/.github/skills/
+/.github/agents/
+/TODO.md
