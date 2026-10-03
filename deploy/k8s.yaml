@@ -1,0 +1,123 @@
+# Reference manifest for running fluxer.christmas on Rancher/Kubernetes.
+# A single replica only: rooms, sessions and multiplayer state live in one process
+# with SQLite on the volume, so the Deployment must never run two pods at once.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fluxer-christmas
+type: Opaque
+stringData:
+  FLUXER_CLIENT_SECRET: change-me
+  # Generate with: openssl rand -hex 32
+  SESSION_SECRET: change-me
+  # Comma-separated Fluxer user IDs allowed in while REQUIRE_LOGIN is on
+  FLUXER_WHITELIST: ''
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluxer-christmas-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluxer-christmas
+spec:
+  replicas: 1
+  strategy:
+    # Stop the old pod before starting the new one: SQLite and the volume are single-writer.
+    type: Recreate
+  selector:
+    matchLabels:
+      app: fluxer-christmas
+  template:
+    metadata:
+      labels:
+        app: fluxer-christmas
+    spec:
+      securityContext:
+        # The image runs as the `node` user (uid 1000); let it write to the volume.
+        fsGroup: 1000
+      containers:
+        - name: app
+          image: ghcr.io/fluxerdevs/fluxer.christmas:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: ORIGIN
+              value: https://fluxer.christmas
+            - name: FLUXER_CLIENT_ID
+              value: '1555762697700651008'
+            - name: FLUXER_INSTANCE
+              value: https://web.canary.fluxer.app
+            - name: REQUIRE_LOGIN
+              value: 'true'
+            # Behind an ingress: trust its headers for the client address.
+            - name: ADDRESS_HEADER
+              value: X-Forwarded-For
+            - name: XFF_DEPTH
+              value: '1'
+          envFrom:
+            - secretRef:
+                name: fluxer-christmas
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: fluxer-christmas-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluxer-christmas
+spec:
+  selector:
+    app: fluxer-christmas
+  ports:
+    - port: 80
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fluxer-christmas
+  annotations:
+    # Keep multiplayer WebSockets open (ingress-nginx defaults to 60 s).
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+spec:
+  rules:
+    - host: fluxer.christmas
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fluxer-christmas
+                port:
+                  number: 80

@@ -1,42 +1,59 @@
-# sv
+# fluxer.christmas
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A cozy Christmas room to walk around in, built with SvelteKit, Threlte and Rapier. It's served by a small Node server that also handles Fluxer login and WebSockets.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-pnpm dlx sv@0.17.1 create --template minimal --types ts --add eslint tailwindcss="plugins:typography,forms" paraglide="languageTags:en, es+demo:yes" ai-tools="ide:claude-code,vscode,other+delivery:plugin+tools:mcp,svelte-code-writer,svelte-core-bestpractices,svelte-file-editor+mcpSetup:remote" prettier playwright --install pnpm .
-```
+Roadmap and status: [PROGRESS.md](PROGRESS.md) (detailed plan in [docs/PLAN.md](docs/PLAN.md)).
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Requires Node 24+ and pnpm.
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm install
+cp .env.example .env   # fill in FLUXER_CLIENT_SECRET to try logging in
+pnpm dev               # http://localhost:4321
 ```
 
-## Building
+The dev server is pinned to port 4321 because that's the OAuth redirect URI registered with Fluxer (`http://localhost:4321/callback`).
 
-To create a production version of your app:
+Useful scripts:
+
+| Command                     | What it does                                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `pnpm check`                | Type-check (run `pnpm build` once first so the Paraglide messages exist)                              |
+| `pnpm lint` / `pnpm format` | Prettier and ESLint                                                                                   |
+| `pnpm test`                 | Playwright end-to-end tests against a production build                                                |
+| `pnpm fluxer:sync`          | Download the Fluxer docs and source this project relies on into `fluxer-reference/` (read-only, AGPL) |
+
+## Running in production
 
 ```sh
-npm run build
+pnpm build
+pnpm start             # node server/index.js, listens on PORT (default 3000)
 ```
 
-You can preview the production build with `npm run preview`.
+`server/index.js` starts SvelteKit's Node server (`build/`) and routes WebSocket upgrades on `/ws`. `/healthz` reports whether the server and its database are up.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+### Docker
+
+GitHub Actions (`.github/workflows/docker.yml`) builds the image and publishes it to `ghcr.io/fluxerdevs/fluxer.christmas` on every push to `main`. It's tagged `latest`, `sha-<commit>` and the version for `v*` tags.
+
+```sh
+docker build -t fluxer-christmas .
+docker run -p 3000:3000 -v fluxer-christmas-data:/data --env-file .env fluxer-christmas
+```
+
+The SQLite database lives in `/data`, so mount a volume there. Run **exactly one** instance: sessions, rooms and multiplayer state belong to a single process. `deploy/k8s.yaml` is a reference setup for Rancher (one replica with the `Recreate` strategy, a PVC, and an ingress with long WebSocket timeouts).
+
+### Environment variables
+
+| Name                                           | Purpose                                                                                  |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `ORIGIN`                                       | Public URL, e.g. `https://fluxer.christmas`. OAuth redirects go to `${ORIGIN}/callback`. |
+| `FLUXER_CLIENT_ID` / `FLUXER_CLIENT_SECRET`    | The Fluxer OAuth application                                                             |
+| `FLUXER_INSTANCE`                              | Fluxer web host (default `https://web.canary.fluxer.app`)                                |
+| `REQUIRE_LOGIN`                                | Work-in-progress gate. Defaults to `true`.                                               |
+| `FLUXER_WHITELIST`                             | Comma-separated Fluxer user IDs allowed in while the gate is on                          |
+| `SESSION_SECRET`                               | Random secret for signed tokens. Required in production.                                 |
+| `DATA_DIR`                                     | SQLite location (`/data` in the image)                                                   |
+| `PORT`, `HOST`, `ADDRESS_HEADER`, `XFF_DEPTH`… | [adapter-node options](https://svelte.dev/docs/kit/adapter-node#Environment-variables)   |

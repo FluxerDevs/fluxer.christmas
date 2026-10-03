@@ -1,8 +1,20 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js';
 import tailwindcss from '@tailwindcss/vite';
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+import { attachUpgrade } from './server/upgrade.js';
+
+/** Routes WebSocket upgrades on the dev server the same way `server/index.js` does in production. */
+const websockets: Plugin = {
+	name: 'fluxer-christmas-websockets',
+	configureServer(server) {
+		if (server.httpServer) attachUpgrade(server.httpServer);
+	},
+	configurePreviewServer(server) {
+		attachUpgrade(server.httpServer);
+	}
+};
 
 export default defineConfig({
 	// Must match the OAuth redirect URI registered with Fluxer (http://localhost:4321/callback).
@@ -16,20 +28,16 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// Static build for GitHub Pages (see .github/workflows/deploy.yml).
-			adapter: adapter({ fallback: '404.html' }),
-			paths: {
-				// Set by CI: '' for a custom domain, '/<repo>' for <user>.github.io/<repo>.
-				base: (process.env.BASE_PATH ?? '') as '' | `/${string}`,
-				// Absolute URLs so `resolve('/')` yields the real base path (used by the i18n reroute).
-				relative: false
-			}
+			// Node server, packaged as a Docker image (see Dockerfile and server/index.js).
+			adapter: adapter()
 		}),
 
 		paraglideVitePlugin({
 			project: './project.inlang',
 			outdir: './src/lib/paraglide',
 			emitTsDeclarations: true
-		})
+		}),
+
+		websockets
 	]
 });

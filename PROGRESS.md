@@ -4,8 +4,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Current status
 
-- **Current phase:** Phase 3 (Backend migration: Docker + GHCR)
-- **Next step:** switch `vite.config.ts` to `@sveltejs/adapter-node`, drop the GitHub Pages/prerender config, then add the custom server entry with `/ws` and `/healthz`.
+- **Current phase:** Phase 4 (Fluxer OAuth login)
+- **Next step:** write `src/lib/server/fluxer.ts` (discovery via `/.well-known/fluxer`, token exchange and refresh, `/users/@me`), then the `/login` and `/callback` routes.
 
 ## Phases
 
@@ -33,14 +33,17 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - [x] e2e: `src/lib/ui/settings.e2e.ts`
 - Note: Phases 6 and 7 add their actions (`view`, `interact`) to `ACTIONS`/`DEFAULT_BINDINGS` and to `actionLabels` in `SettingsPanel.svelte`.
 
-### Phase 3: Backend migration (Docker + GHCR)
+### Phase 3: Backend migration (Docker + GHCR) ✅
 
-- [ ] adapter-node; remove the static/Pages-only config
-- [ ] Custom server entry with WebSocket upgrade on `/ws`, plus `/healthz`
-- [ ] `src/lib/server/env.ts`, `db.ts` (`node:sqlite`, migrations)
-- [ ] `Dockerfile`, `.dockerignore`
-- [ ] GitHub Actions: build and push to GHCR (replaces the Pages deploy)
-- [ ] `deploy/k8s.yaml` reference for Rancher (single Deployment, PVC)
+- [x] adapter-node **v5** (v6 needs SvelteKit 3). Removed the prerender/base-path/Pages config, the hidden locale links and `static/.nojekyll`.
+- [x] `server/index.js` (production entry) + `server/upgrade.js`. These route `/ws` upgrades to the handler that `src/lib/server/websocket.ts` registers from the `init` hook in `hooks.server.ts`. A Vite plugin wires the same bridge into `pnpm dev`/`preview`.
+- [x] `/healthz` (`src/routes/healthz/+server.ts`) checks that the DB answers
+- [x] `src/lib/server/env.ts` (typed runtime config), `db.ts` (`node:sqlite`, `PRAGMA user_version` migrations; tables users, sessions, rooms, invites)
+- [x] `Dockerfile` (node:24-alpine, non-root, `/data` volume, healthcheck) and `.dockerignore`
+- [x] `.github/workflows/docker.yml`: check + lint, then build and push `ghcr.io/fluxerdevs/fluxer.christmas` (replaces the Pages deploy)
+- [x] `deploy/k8s.yaml` (Rancher reference: 1 replica, Recreate, PVC, ingress WebSocket timeouts), `.env.example`, README
+- Verified locally: `node server/index.js` serves the page, `/healthz` and `/ws`, and creates the DB. The dev server bridge works too.
+- [ ] **Not yet verified:** `docker build` (the Docker daemon wasn't running on the dev machine) and the first CI run to GHCR
 
 ### Phase 4: Fluxer OAuth login (TODO 3)
 
@@ -119,7 +122,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 ## Manual steps for the owner
 
 - [ ] Add `https://fluxer.christmas/callback` as a redirect URI in the Fluxer application settings.
-- [ ] Create the GHCR package and the Rancher workload (Phase 3).
+- [ ] Run `docker build .` once locally, or check the first `docker.yml` CI run after pushing.
+- [ ] Create the Rancher workload from `deploy/k8s.yaml` (fill in the Secret). If the GHCR package stays private, add an image pull secret.
 
 ## Resume notes
 
