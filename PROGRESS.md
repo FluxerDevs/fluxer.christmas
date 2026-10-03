@@ -18,6 +18,7 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - [x] Remove the `src/routes/demo/` scaffolding and replace its e2e test with a smoke test (`src/routes/page.e2e.ts`)
 
 ### Phase 1: Gingy cookies (TODO 1) ✅
+
 - [x] Gingy silhouette geometry: an extruded, bevelled outline in `src/lib/3d/gingy/shape.ts`, meshes in `gingy.ts`
 - [x] `gingyTexture()` in `textures.ts`: dough, browned rim, icing on wrists/ankles, eyes, eyebrows, grin
 - [x] Gumdrop buttons (red and green), instanced with the same matrices as the cookies
