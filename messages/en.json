@@ -31,5 +31,11 @@
 	"logout": "Log out",
 	"login_error_denied": "Login cancelled.",
 	"login_error_expired": "The login took too long. Please try again.",
-	"login_error_failed": "Couldn't log in with Fluxer. Please try again."
+	"login_error_failed": "Couldn't log in with Fluxer. Please try again.",
+	"wip_badge": "Work in progress",
+	"wip_body": "The fire's still being lit. This room is under construction and only open to a few testers for now.",
+	"wip_community": "Follow along, share ideas or ask to become a tester in the support community.",
+	"wip_join": "Join the community",
+	"wip_tester_login": "Already a tester?",
+	"wip_not_listed": "You're logged in as {name}, but you're not on the tester list yet. Ask in the community to get in."
 }

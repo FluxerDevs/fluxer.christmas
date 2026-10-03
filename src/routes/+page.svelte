@@ -1,28 +1,29 @@
 <script lang="ts">
-	import { Canvas } from '@threlte/core';
-	import { ACESFilmicToneMapping, PCFShadowMap } from 'three';
+	import { browser } from '$app/environment';
 	import { m } from '$lib/paraglide/messages.js';
-	import { watchPointerLock } from '$lib/game/state.svelte';
-	import { input } from '$lib/game/input.svelte';
-	import { loadSettings } from '$lib/game/settings';
-	import Scene from '$lib/3d/Scene.svelte';
-	import HUD from '$lib/ui/HUD.svelte';
-	import StartOverlay from '$lib/ui/StartOverlay.svelte';
+	import WipScreen from '$lib/ui/WipScreen.svelte';
+	import type { PageProps } from './$types';
 
-	// `pointerlockchange` isn't in Svelte's typed document events, so subscribe manually.
-	$effect(() => watchPointerLock());
-	$effect(() => input.attach());
-	loadSettings();
+	let { data }: PageProps = $props();
+
+	// Only download the 3D bundle for visitors who will see it.
+	const experience = $derived(
+		browser && data.allowed ? import('$lib/Experience.svelte') : undefined
+	);
 </script>
 
 <svelte:head>
 	<title>{m.title()}</title>
 </svelte:head>
 
-<div class="fixed inset-0 overflow-hidden bg-[#0d0705] select-none">
-	<Canvas toneMapping={ACESFilmicToneMapping} shadows={PCFShadowMap} dpr={[1, 2]}>
-		<Scene />
-	</Canvas>
-	<HUD />
-	<StartOverlay />
-</div>
+{#if !data.allowed}
+	<WipScreen user={data.user} />
+{:else}
+	<div class="fixed inset-0 bg-[#0d0705]">
+		{#await experience then module}
+			{#if module}
+				<module.default />
+			{/if}
+		{/await}
+	</div>
+{/if}
