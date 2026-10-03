@@ -39,9 +39,8 @@ jobs:
       - run: pnpm build
         env:
           DEPLOY_TARGET: static
-          # The work-in-progress screen is shown unless the repository variable
-          # REQUIRE_LOGIN is set to 'false' (Settings → Secrets and variables → Actions).
-          REQUIRE_LOGIN: ${{ vars.REQUIRE_LOGIN || 'true' }}
+          # Temporarily open to everyone: Pages has no server to log in with.
+          REQUIRE_LOGIN: 'false'
 
       - uses: actions/upload-pages-artifact@v3
         with:
