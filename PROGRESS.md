@@ -4,8 +4,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Current status
 
-- **Current phase:** Phase 5 (Temporary whitelist gate)
-- **Next step:** add `src/routes/+page.server.ts` computing `allowed` from `config.requireLogin`/`config.whitelist`, and a `WipScreen.svelte` shown instead of the lazily imported 3D scene.
+- **Current phase:** Phase 6 (Player model and third-person view), not started
+- **Next step:** `src/lib/game/avatar.ts` (`AvatarConfig`) and `src/lib/3d/avatar/Avatar.svelte`, then the third-person camera in `Camera.svelte`.
 
 ## Phases
 
@@ -19,10 +19,10 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ### Phase 1: Gingy cookies (TODO 1) ✅
 
-- [x] Gingy silhouette geometry: an extruded, bevelled outline in `src/lib/3d/gingy/shape.ts`, meshes in `gingy.ts`
-- [x] `gingyTexture()` in `textures.ts`: dough, browned rim, icing on wrists/ankles, eyes, eyebrows, grin
-- [x] Gumdrop buttons (red and green), instanced with the same matrices as the cookies
-- [x] Reused on the coffee-table cookie plate
+- [x] Cookies use the **Gingy (Shrek) model**, `static/models/gingy.glb` (CC BY 4.0, tannersprague938). The README and the Settings panel credit it.
+- [x] `src/lib/3d/gingy.ts` loads it once with `GLTFLoader`, turns it upright facing +Z (the raw mesh is upside down; the file's root node would lay it flat), scales it to 0.2 m and fills `InstancedMesh` batches that stay hidden until it loads
+- [x] Used on the tree (14, scale 0.9) and the coffee-table plate (5, lying face up)
+- The first version was procedural (extruded outline + canvas icing texture). It was replaced by the model; see git history before this change.
 
 ### Phase 2: Keyboard layout support (TODO 2) ✅
 
@@ -57,10 +57,12 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - [ ] **Needs the real `FLUXER_CLIENT_SECRET`** in `.env` to test a full round trip
 - Discovery: `https://canary.fluxer.com/.well-known/fluxer` → webapp `web.canary.fluxer.app`, API `api.canary.fluxer.app`, media `fluxerusercontent.com`, static `fluxerstatic.com`. `web.canary.fluxer.app` itself does **not** serve `/.well-known/fluxer`.
 
-### Phase 5: Temporary whitelist gate (TODO 7)
+### Phase 5: Temporary whitelist gate (TODO 7) ✅
 
-- [ ] `REQUIRE_LOGIN` + `FLUXER_WHITELIST`
-- [ ] WIP screen linking to https://fluxer.gg/dh9m2Iqo, with lazy-loaded 3D
+- [x] `REQUIRE_LOGIN` (default on) + `FLUXER_WHITELIST`, checked in `src/lib/server/access.ts` and `src/routes/+page.server.ts`
+- [x] `WipScreen.svelte` (link to https://fluxer.gg/dh9m2Iqo, login, "not on the tester list" for logged-in non-testers). The 3D experience moved to `src/lib/Experience.svelte` and is lazy-imported only for allowed visitors.
+- [x] e2e: Playwright runs the production server twice (gate off on :4173, on on :4174). `e2e/fixtures.ts` seeds sessions in the DB. Gate tests are in `src/routes/wip.gate.e2e.ts`.
+- [ ] Invite holders bypass the gate (Phase 10, pending the owner's confirmation)
 
 ### Phase 6: Player model and third-person view (TODO 4, 5)
 

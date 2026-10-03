@@ -17,7 +17,7 @@
 		Vector3
 	} from 'three';
 	import { LAYOUT, seededRandom } from '$lib/game/world';
-	import { gingyBatch } from '../gingy/gingy';
+	import { gingyBatch } from '../gingy';
 
 	const { position, rotationY } = LAYOUT.christmasTree;
 	const rand = seededRandom(42);
@@ -220,9 +220,7 @@
 		<T.MeshStandardMaterial color="#d8b24a" metalness={0.85} roughness={0.25} />
 	</T.Mesh>
 	<T is={ornaments} />
-	{#each gingy.meshes as mesh (mesh.uuid)}
-		<T is={mesh} />
-	{/each}
+	<T is={gingy} />
 	<T is={bulbs} />
 
 	<!-- Star -->

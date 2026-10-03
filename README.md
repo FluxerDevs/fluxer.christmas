@@ -57,3 +57,7 @@ The SQLite database lives in `/data`, so mount a volume there. Run **exactly one
 | `SESSION_SECRET`                               | Random secret for signed tokens. Required in production.                                 |
 | `DATA_DIR`                                     | SQLite location (`/data` in the image)                                                   |
 | `PORT`, `HOST`, `ADDRESS_HEADER`, `XFF_DEPTH`… | [adapter-node options](https://svelte.dev/docs/kit/adapter-node#Environment-variables)   |
+
+## Credits
+
+- [Gingy (shrek)](https://sketchfab.com/3d-models/gingy-shrek-cea352f1dd9848cdbdb748d1926c05be) by [tannersprague938](https://sketchfab.com/tannersprague938), licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/). Used as-is in `static/models/gingy.glb`; it's turned upright and scaled at load time. It's also credited in the in-game Settings panel.

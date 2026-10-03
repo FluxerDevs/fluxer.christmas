@@ -37,5 +37,7 @@
 	"wip_community": "Sigue el progreso, comparte ideas o pide ser tester en la comunidad de soporte.",
 	"wip_join": "Unirse a la comunidad",
 	"wip_tester_login": "¿Ya eres tester?",
-	"wip_not_listed": "Has iniciado sesión como {name}, pero aún no estás en la lista de testers. Pide acceso en la comunidad."
+	"wip_not_listed": "Has iniciado sesión como {name}, pero aún no estás en la lista de testers. Pide acceso en la comunidad.",
+	"credits": "Créditos",
+	"credits_gingy": "Modelo de Gingy por {author}, con licencia CC BY 4.0."
 }

@@ -4,7 +4,7 @@
 	import { Object3D, type PointLight } from 'three';
 	import { LAYOUT, SIZES } from '$lib/game/world';
 	import { woodTexture } from '../textures';
-	import { gingyBatch } from '../gingy/gingy';
+	import { gingyBatch } from '../gingy';
 
 	const { position, rotationY } = LAYOUT.coffeeTable;
 	const [width, height, depth] = SIZES.coffeeTable;
@@ -119,9 +119,7 @@
 			<T.CylinderGeometry args={[0.15, 0.12, 0.016, 32]} />
 			<T.MeshStandardMaterial color="#f4efe6" roughness={0.3} />
 		</T.Mesh>
-		{#each cookies.meshes as mesh (mesh.uuid)}
-			<T is={mesh} />
-		{/each}
+		<T is={cookies} />
 	</T.Group>
 
 	<!-- Plate of cupcakes / treats -->

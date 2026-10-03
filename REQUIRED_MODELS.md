@@ -36,14 +36,14 @@ Every object in the Christmas room is currently built from primitive geometries 
 
 ## Christmas tree & presents
 
-| Asset                              | Placeholder component                                               | Target size                    | Notes                                                                                                     |
-| ---------------------------------- | ------------------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| Christmas tree                     | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte) | ~2.7 Ø × 3.85 tall (with star) | Floor-to-ceiling. Ideally undecorated, so the current instanced lights and ornaments can still be placed. |
-| Tree stand / skirt                 | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte) | 2.4 Ø skirt                    |                                                                                                           |
-| Ornament baubles                   | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte) | ~0.12 Ø                        | One model, recolored via instancing.                                                                      |
-| Gingerbread-man ornament           | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte) | ~0.18 tall                     | Flat cookie with icing.                                                                                   |
-| Star topper                        | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte) | ~0.36                          | Emissive.                                                                                                 |
-| Wrapped presents (4 to 6 variants) | [`Presents.svelte`](src/lib/3d/furniture/Presents.svelte)           | 0.2 to 0.5 cubes               | Ribbons and bows. Varied wrapping.                                                                        |
+| Asset                              | Placeholder component                                                           | Target size                    | Notes                                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Christmas tree                     | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte)             | ~2.7 Ø × 3.85 tall (with star) | Floor-to-ceiling. Ideally undecorated, so the current instanced lights and ornaments can still be placed. |
+| Tree stand / skirt                 | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte)             | 2.4 Ø skirt                    |                                                                                                           |
+| Ornament baubles                   | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte)             | ~0.12 Ø                        | One model, recolored via instancing.                                                                      |
+| ~~Gingerbread-man ornament~~       | Delivered: `static/models/gingy.glb`, used by [`gingy.ts`](src/lib/3d/gingy.ts) | ~0.18 tall                     | CC BY 4.0, credited in the README.                                                                        |
+| Star topper                        | [`ChristmasTree.svelte`](src/lib/3d/furniture/ChristmasTree.svelte)             | ~0.36                          | Emissive.                                                                                                 |
+| Wrapped presents (4 to 6 variants) | [`Presents.svelte`](src/lib/3d/furniture/Presents.svelte)                       | 0.2 to 0.5 cubes               | Ribbons and bows. Varied wrapping.                                                                        |
 
 ## Coffee-table decor
 

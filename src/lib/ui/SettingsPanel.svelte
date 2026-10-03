@@ -132,5 +132,19 @@
 				{m.settings_reset()}
 			</button>
 		</section>
+
+		<footer class="border-t border-amber-200/15 pt-4 text-xs text-amber-100/65">
+			<h3 class="mb-1 font-medium text-amber-100/85">{m.credits()}</h3>
+			<p>
+				<a
+					href="https://sketchfab.com/3d-models/gingy-shrek-cea352f1dd9848cdbdb748d1926c05be"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline underline-offset-2 hover:text-amber-50"
+				>
+					{m.credits_gingy({ author: 'tannersprague938' })}
+				</a>
+			</p>
+		</footer>
 	</div>
 </dialog>
