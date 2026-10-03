@@ -4,8 +4,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Current status
 
-- **Current phase:** Phase 1 (Gingy cookies)
-- **Next step:** replace `gingerbreadGeometry()` in `src/lib/3d/furniture/ChristmasTree.svelte` with the Gingy silhouette and `gingyTexture()`.
+- **Current phase:** Phase 2 (Keyboard layout support)
+- **Next step:** create `src/lib/game/input.svelte.ts` (key state keyed on `event.code`) and replace `useInputMap` in `src/lib/3d/Player.svelte`.
 
 ## Phases
 
@@ -17,12 +17,11 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - [x] Pin the Vite dev server to port 4321 (OAuth redirect URI), and update `.vscode/launch.json` to match
 - [x] Remove the `src/routes/demo/` scaffolding and replace its e2e test with a smoke test (`src/routes/page.e2e.ts`)
 
-### Phase 1: Gingy cookies (TODO 1)
-
-- [ ] Gingy silhouette geometry (extruded shape, bevel)
-- [ ] `gingyTexture()`: dough, icing, face, buttons
-- [ ] Gumdrop buttons
-- [ ] (optional) reuse on the coffee-table cookie plate
+### Phase 1: Gingy cookies (TODO 1) ✅
+- [x] Gingy silhouette geometry: an extruded, bevelled outline in `src/lib/3d/gingy/shape.ts`, meshes in `gingy.ts`
+- [x] `gingyTexture()` in `textures.ts`: dough, browned rim, icing on wrists/ankles, eyes, eyebrows, grin
+- [x] Gumdrop buttons (red and green), instanced with the same matrices as the cookies
+- [x] Reused on the coffee-table cookie plate
 
 ### Phase 2: Keyboard layout support (TODO 2)
 

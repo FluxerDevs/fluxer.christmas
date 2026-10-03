@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
 	import { FakeGlowMaterial } from '@threlte/extras';
-	import type { PointLight } from 'three';
+	import { Object3D, type PointLight } from 'three';
 	import { LAYOUT, SIZES } from '$lib/game/world';
 	import { woodTexture } from '../textures';
+	import { gingyBatch } from '../gingy/gingy';
 
 	const { position, rotationY } = LAYOUT.coffeeTable;
 	const [width, height, depth] = SIZES.coffeeTable;
@@ -17,10 +18,23 @@
 		{ x: -0.64, z: 0.14, h: 0.16 }
 	];
 
-	const cookies = Array.from({ length: 7 }, (_, i) => {
-		const a = (i / 7) * Math.PI * 2;
-		return { x: Math.cos(a) * 0.07, z: Math.sin(a) * 0.07, tilt: (i % 3) * 0.15 };
-	});
+	// Gingy cookies lying face up on the plate, the last one propped on the others.
+	const COOKIES = 5;
+	const cookies = gingyBatch(COOKIES);
+	const dummy = new Object3D();
+	for (let i = 0; i < COOKIES; i++) {
+		const a = (i / (COOKIES - 1)) * Math.PI * 2;
+		const stacked = i === COOKIES - 1;
+		dummy.position.set(
+			stacked ? 0 : Math.cos(a) * 0.05,
+			stacked ? 0.04 : 0.024,
+			stacked ? 0 : Math.sin(a) * 0.05
+		);
+		dummy.rotation.set(-Math.PI / 2 + (stacked ? 0.12 : 0), a + 1.2 * i, 0, 'YXZ');
+		dummy.scale.setScalar(0.55);
+		dummy.updateMatrix();
+		cookies.setMatrixAt(i, dummy.matrix);
+	}
 
 	let candleLight = $state<PointLight>();
 	let time = 0;
@@ -105,11 +119,8 @@
 			<T.CylinderGeometry args={[0.15, 0.12, 0.016, 32]} />
 			<T.MeshStandardMaterial color="#f4efe6" roughness={0.3} />
 		</T.Mesh>
-		{#each cookies as cookie, i (i)}
-			<T.Mesh position={[cookie.x, 0.025, cookie.z]} rotation.x={cookie.tilt} castShadow>
-				<T.CylinderGeometry args={[0.035, 0.035, 0.012, 16]} />
-				<T.MeshStandardMaterial color={i % 2 ? '#b07a3a' : '#8a4f22'} roughness={0.9} />
-			</T.Mesh>
+		{#each cookies.meshes as mesh (mesh.uuid)}
+			<T is={mesh} />
 		{/each}
 	</T.Group>
 

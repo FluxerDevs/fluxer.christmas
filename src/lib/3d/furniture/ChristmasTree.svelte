@@ -2,11 +2,9 @@
 	import { T, useTask } from '@threlte/core';
 	import { FakeGlowMaterial } from '@threlte/extras';
 	import {
-		BoxGeometry,
 		CatmullRomCurve3,
 		Color,
 		ConeGeometry,
-		CylinderGeometry,
 		DoubleSide,
 		ExtrudeGeometry,
 		InstancedMesh,
@@ -18,8 +16,8 @@
 		TubeGeometry,
 		Vector3
 	} from 'three';
-	import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 	import { LAYOUT, seededRandom } from '$lib/game/world';
+	import { gingyBatch } from '../gingy/gingy';
 
 	const { position, rotationY } = LAYOUT.christmasTree;
 	const rand = seededRandom(42);
@@ -124,33 +122,22 @@
 	dummy.scale.setScalar(1);
 	ornaments.castShadow = true;
 
-	/* ---------- Gingerbread men (placeholder cookie shape) ---------- */
-	function gingerbreadGeometry() {
-		const head = new CylinderGeometry(0.035, 0.035, 0.015, 12)
-			.rotateX(Math.PI / 2)
-			.translate(0, 0.07, 0);
-		const body = new BoxGeometry(0.06, 0.07, 0.015);
-		const arms = new BoxGeometry(0.13, 0.025, 0.015).translate(0, 0.02, 0);
-		const legL = new BoxGeometry(0.025, 0.06, 0.015).rotateZ(0.25).translate(-0.02, -0.055, 0);
-		const legR = new BoxGeometry(0.025, 0.06, 0.015).rotateZ(-0.25).translate(0.02, -0.055, 0);
-		return mergeGeometries([head, body, arms, legL, legR])!;
-	}
+	/* ---------- Gingy cookies ---------- */
 	const GINGER_COUNT = 14;
-	const gingerbread = new InstancedMesh(
-		gingerbreadGeometry(),
-		new MeshStandardMaterial({ color: '#9a5a2a', roughness: 0.8 }),
-		GINGER_COUNT
-	);
+	const gingy = gingyBatch(GINGER_COUNT);
 	for (let i = 0; i < GINGER_COUNT; i++) {
 		const y = 0.6 + (i / GINGER_COUNT) * (TOP - 1.1);
 		const angle = i * 2.1 + 0.9;
-		const r = envelope(y) * 0.97 + 0.02;
+		const r = envelope(y) * 0.97 + 0.06;
 		dummy.position.set(Math.sin(angle) * r, y, Math.cos(angle) * r);
-		dummy.rotation.set(0, angle, (rand() - 0.5) * 0.4);
-		dummy.scale.setScalar(1.4);
+		// Face outwards, hang with a slight jaunty tilt and lean back against the branches.
+		dummy.rotation.set(-0.3, angle, (rand() - 0.5) * 0.5, 'YXZ');
+		dummy.scale.setScalar(0.9);
 		dummy.updateMatrix();
-		gingerbread.setMatrixAt(i, dummy.matrix);
+		gingy.setMatrixAt(i, dummy.matrix);
 	}
+	dummy.rotation.set(0, 0, 0, 'XYZ');
+	dummy.scale.setScalar(1);
 
 	/* ---------- Gold tinsel spiral ---------- */
 	const tinselPoints: Vector3[] = [];
@@ -233,7 +220,9 @@
 		<T.MeshStandardMaterial color="#d8b24a" metalness={0.85} roughness={0.25} />
 	</T.Mesh>
 	<T is={ornaments} />
-	<T is={gingerbread} castShadow />
+	{#each gingy.meshes as mesh (mesh.uuid)}
+		<T is={mesh} />
+	{/each}
 	<T is={bulbs} />
 
 	<!-- Star -->
