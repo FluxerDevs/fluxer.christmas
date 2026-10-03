@@ -51,7 +51,7 @@ The SQLite database lives in `/data`, so mount a volume there. Run **exactly one
 | ---------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `ORIGIN`                                       | Public URL, e.g. `https://fluxer.christmas`. OAuth redirects go to `${ORIGIN}/callback`. |
 | `FLUXER_CLIENT_ID` / `FLUXER_CLIENT_SECRET`    | The Fluxer OAuth application                                                             |
-| `FLUXER_INSTANCE`                              | Fluxer web host (default `https://web.canary.fluxer.app`)                                |
+| `FLUXER_INSTANCE`                              | Fluxer instance to discover hosts from (default `https://canary.fluxer.com`)             |
 | `REQUIRE_LOGIN`                                | Work-in-progress gate. Defaults to `true`.                                               |
 | `FLUXER_WHITELIST`                             | Comma-separated Fluxer user IDs allowed in while the gate is on                          |
 | `SESSION_SECRET`                               | Random secret for signed tokens. Required in production.                                 |

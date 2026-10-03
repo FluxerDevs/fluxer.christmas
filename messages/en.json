@@ -26,5 +26,10 @@
 	"action_backward": "Back",
 	"action_left": "Left",
 	"action_right": "Right",
-	"action_run": "Run"
+	"action_run": "Run",
+	"login": "Log in with Fluxer",
+	"logout": "Log out",
+	"login_error_denied": "Login cancelled.",
+	"login_error_expired": "The login took too long. Please try again.",
+	"login_error_failed": "Couldn't log in with Fluxer. Please try again."
 }

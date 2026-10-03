@@ -4,8 +4,8 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Current status
 
-- **Current phase:** Phase 4 (Fluxer OAuth login)
-- **Next step:** write `src/lib/server/fluxer.ts` (discovery via `/.well-known/fluxer`, token exchange and refresh, `/users/@me`), then the `/login` and `/callback` routes.
+- **Current phase:** Phase 5 (Temporary whitelist gate)
+- **Next step:** add `src/routes/+page.server.ts` computing `allowed` from `config.requireLogin`/`config.whitelist`, and a `WipScreen.svelte` shown instead of the lazily imported 3D scene.
 
 ## Phases
 
@@ -45,12 +45,17 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 - Verified locally: `node server/index.js` serves the page, `/healthz` and `/ws`, and creates the DB. The dev server bridge works too.
 - [ ] **Not yet verified:** `docker build` (the Docker daemon wasn't running on the dev machine) and the first CI run to GHCR
 
-### Phase 4: Fluxer OAuth login (TODO 3)
+### Phase 4: Fluxer OAuth login (TODO 3) ✅
 
-- [ ] `src/lib/server/fluxer.ts` (discovery, token exchange and refresh, `/users/@me`, guilds, CDN URLs)
-- [ ] `/login`, `/callback`, `/logout` (state + PKCE S256)
-- [ ] Sessions in SQLite, `locals.user` in `hooks.server.ts`
-- [ ] User chip in the UI (optional login)
+- [x] `src/lib/server/fluxer.ts`: discovery from `${FLUXER_INSTANCE}/.well-known/fluxer` (cached 1 h), code exchange and refresh, revoke, `/users/@me`, `/users/@me/guilds`, avatar and guild icon URLs
+- [x] `/login` (state + PKCE S256 in a 10-minute httpOnly cookie, `?returnTo=`), `/callback` (errors go back with `?login_error=denied|expired|failed`), `/logout` (POST only; revokes the refresh token)
+- [x] Sessions in SQLite (`src/lib/server/session.ts`): the cookie holds a random token and the DB stores its SHA-256 and the Fluxer tokens. Access tokens refresh when they have less than a day left, deduplicated per session. `invalid_grant` ends the session.
+- [x] `hooks.server.ts` sets `locals.session`/`locals.user`. `+layout.server.ts` exposes `user` to pages.
+- [x] `AccountChip.svelte` on the start/pause overlay (log in, or avatar + name + log out)
+- [x] e2e: `src/routes/login/login.e2e.ts` (needs network for discovery)
+- Verified: the authorize URL matches the registered one plus state/PKCE. The token endpoint accepts the request format (with a fake secret it answers `invalid_client`). A seeded session renders the chip, and logout clears it.
+- [ ] **Needs the real `FLUXER_CLIENT_SECRET`** in `.env` to test a full round trip
+- Discovery: `https://canary.fluxer.com/.well-known/fluxer` → webapp `web.canary.fluxer.app`, API `api.canary.fluxer.app`, media `fluxerusercontent.com`, static `fluxerstatic.com`. `web.canary.fluxer.app` itself does **not** serve `/.well-known/fluxer`.
 
 ### Phase 5: Temporary whitelist gate (TODO 7)
 
@@ -108,16 +113,16 @@ Tracks the work requested in `TODO.md`. Update this file at the end of every tas
 
 ## Environment variables (from Phase 3)
 
-| Name                   | Purpose                                     | Example                         |
-| ---------------------- | ------------------------------------------- | ------------------------------- |
-| `ORIGIN`               | Public URL of the site                      | `https://fluxer.christmas`      |
-| `FLUXER_CLIENT_ID`     | OAuth app id                                | `1555762697700651008`           |
-| `FLUXER_CLIENT_SECRET` | OAuth app secret                            | (secret)                        |
-| `FLUXER_INSTANCE`      | Fluxer web host for authorize and discovery | `https://web.canary.fluxer.app` |
-| `FLUXER_WHITELIST`     | Allowed user IDs while gated                | `123,456`                       |
-| `REQUIRE_LOGIN`        | Enables the WIP gate                        | `true`                          |
-| `SESSION_SECRET`       | HMAC key for join tickets                   | (random 32+ bytes)              |
-| `DATA_DIR`             | SQLite location                             | `/data`                         |
+| Name                   | Purpose                                       | Example                     |
+| ---------------------- | --------------------------------------------- | --------------------------- |
+| `ORIGIN`               | Public URL of the site                        | `https://fluxer.christmas`  |
+| `FLUXER_CLIENT_ID`     | OAuth app id                                  | `1555762697700651008`       |
+| `FLUXER_CLIENT_SECRET` | OAuth app secret                              | (secret)                    |
+| `FLUXER_INSTANCE`      | Instance origin serving `/.well-known/fluxer` | `https://canary.fluxer.com` |
+| `FLUXER_WHITELIST`     | Allowed user IDs while gated                  | `123,456`                   |
+| `REQUIRE_LOGIN`        | Enables the WIP gate                          | `true`                      |
+| `SESSION_SECRET`       | HMAC key for join tickets                     | (random 32+ bytes)          |
+| `DATA_DIR`             | SQLite location                               | `/data`                     |
 
 ## Manual steps for the owner
 

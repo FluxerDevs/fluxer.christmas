@@ -1,7 +1,9 @@
 import type { Handle, ServerInit } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 import { getDb } from '$lib/server/db';
+import { getSession, SESSION_COOKIE } from '$lib/server/session';
 import { registerWebSockets } from '$lib/server/websocket';
 
 export const init: ServerInit = () => {
@@ -9,6 +11,16 @@ export const init: ServerInit = () => {
 	getDb();
 	// Placeholder until multiplayer lands: greet and keep the socket open.
 	registerWebSockets((socket) => socket.send(JSON.stringify({ type: 'hello', v: 1 })));
+};
+
+const handleSession: Handle = async ({ event, resolve }) => {
+	const token = event.cookies.get(SESSION_COOKIE);
+	const session = await getSession(token);
+	// A cookie for a session that no longer exists: drop it.
+	if (token && !session) event.cookies.delete(SESSION_COOKIE, { path: '/' });
+	event.locals.session = session;
+	event.locals.user = session?.user ?? null;
+	return resolve(event);
 };
 
 const handleParaglide: Handle = ({ event, resolve }) =>
@@ -23,4 +35,4 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 		});
 	});
 
-export const handle: Handle = handleParaglide;
+export const handle: Handle = sequence(handleSession, handleParaglide);

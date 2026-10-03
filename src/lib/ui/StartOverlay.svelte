@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { m } from '$lib/paraglide/messages.js';
 	import { enterRoom, game } from '$lib/game/state.svelte';
+	import AccountChip from './AccountChip.svelte';
 	import SettingsPanel from './SettingsPanel.svelte';
 
 	let settingsOpen = $state(false);
@@ -44,6 +45,10 @@
 			>
 				{action}
 			</span>
+		</div>
+
+		<div class="absolute top-4 left-4">
+			<AccountChip />
 		</div>
 
 		<button

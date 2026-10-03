@@ -26,5 +26,10 @@
 	"action_backward": "Atrás",
 	"action_left": "Izquierda",
 	"action_right": "Derecha",
-	"action_run": "Correr"
+	"action_run": "Correr",
+	"login": "Iniciar sesión con Fluxer",
+	"logout": "Cerrar sesión",
+	"login_error_denied": "Inicio de sesión cancelado.",
+	"login_error_expired": "El inicio de sesión tardó demasiado. Inténtalo de nuevo.",
+	"login_error_failed": "No se pudo iniciar sesión con Fluxer. Inténtalo de nuevo."
 }

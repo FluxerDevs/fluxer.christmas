@@ -21,9 +21,9 @@ export const config = {
 	get clientSecret() {
 		return env.FLUXER_CLIENT_SECRET ?? '';
 	},
-	/** Fluxer web host serving the authorize page and `/.well-known/fluxer`. */
+	/** Fluxer instance origin that serves `/.well-known/fluxer`; every other URL comes from there. */
 	get fluxerInstance() {
-		return (env.FLUXER_INSTANCE || 'https://web.canary.fluxer.app').replace(/\/$/, '');
+		return (env.FLUXER_INSTANCE || 'https://canary.fluxer.com').replace(/\/$/, '');
 	},
 	/** Fluxer user IDs allowed in while the work-in-progress gate is on. */
 	get whitelist() {

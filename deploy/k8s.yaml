@@ -55,7 +55,7 @@ spec:
             - name: FLUXER_CLIENT_ID
               value: '1555762697700651008'
             - name: FLUXER_INSTANCE
-              value: https://web.canary.fluxer.app
+              value: https://canary.fluxer.com
             - name: REQUIRE_LOGIN
               value: 'true'
             # Behind an ingress: trust its headers for the client address.
